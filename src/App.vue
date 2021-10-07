@@ -1,28 +1,43 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <AddTodoForm v-on:add-todo="addTodoItem" />
+    <TodoList
+      v-bind:todolist="todoList"
+      v-on:save-new-list="saveNewList"
+      v-on:delete-item="deleteItem"
+    />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import initialTodoList from "./assets/InitialTodoList.js";
+import TodoList from "./components/TodoList.vue";
+import AddTodoForm from "./components/AddTodoForm.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    TodoList,
+    AddTodoForm,
+  },
+  data() {
+    return {
+      todoList: initialTodoList,
+    };
+  },
+  methods: {
+    saveNewList() {
+      localStorage.setItem("initial_list", JSON.stringify(this.todoList));
+    },
+    deleteItem(id) {
+      this.todoList = this.todoList.filter((todoItem) => todoItem.id != id);
+      this.saveNewList();
+    },
+    addTodoItem(newTodoItem) {
+      this.todoList = [...this.todoList, newTodoItem];
+    },
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
